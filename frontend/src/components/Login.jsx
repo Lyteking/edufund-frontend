@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/token/', {
-        email: email,
-        password: password
+      const response = await axios.post("http://127.0.0.1:8000/api/token/", {
+        email,
+        password,
       });
-      console.log('Login Successful:', response.data);
+
+      const { access, refresh } = response.data;
+
+      // Store tokens in localStorage
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+
+      console.log("Login successful!");
+      console.log("Access Token:", access);
+      console.log("Refresh Token:", refresh);
     } catch (err) {
-      console.error('Login Error:', err.response?.data || err.message);
-      setError(err.response?.data?.detail || 'Login failed');
+      setError("Login failed. Check your credentials.");
+      console.error("Login error:", err.response?.data || err.message);
     }
   };
 

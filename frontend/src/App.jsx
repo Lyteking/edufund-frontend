@@ -5,6 +5,8 @@ import './App.css'
 import LoginPage from './components/Login'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import SignupPage from './components/SignUp'
+import Dashboard from "./components/Dashboard";
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,7 +16,9 @@ function App() {
       <Router>
         <Routes>
           <Route path='/sign-up' element={<SignupPage/>}/>
-          <Route path='/log-in' element={<LoginPage/>}/>
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </Router>
    </>
