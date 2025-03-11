@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import LoginPage from './components/Login'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import SignupPage from './components/SignUp'
+import SponsorSignupPage from './components/SponsorSignUp'
 import Dashboard from "./components/Dashboard";
+import Layout from "./components/Layout";
+import SignUpSelection from "./components/SignUpSelection";
+import LandingPage from './components/LandingPage'
 
 
 function App() {
@@ -14,12 +15,17 @@ function App() {
   return (
    <>
       <Router>
-        <Routes>
-          <Route path='/sign-up' element={<SignupPage/>}/>
+        <Layout>
+          <Routes>
+          <Route path='/' element={<LandingPage/>}/>
+          <Route path="/sign-up-selection" element={<SignUpSelection />} />
+          <Route path='/sponsor-sign-up' element={<SponsorSignupPage/>}/>
           <Route path='/login' element={<LoginPage/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
+        </Layout>
+        
       </Router>
    </>
   )

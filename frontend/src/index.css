@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+@theme {
+    --text-big: 3rem;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hidden {
+    -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+  }

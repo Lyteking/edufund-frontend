@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import image from "../assets/signupbg.jpeg"; // Update with your image path
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -18,13 +19,10 @@ const LoginPage = () => {
 
       const { access, refresh } = response.data;
 
-      // Store tokens in localStorage
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
 
       console.log("Login successful!");
-      console.log("Access Token:", access);
-      console.log("Refresh Token:", refresh);
     } catch (err) {
       setError("Login failed. Check your credentials.");
       console.error("Login error:", err.response?.data || err.message);
@@ -32,39 +30,73 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        {error && <p className="text-red-500 text-center">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            Login
-          </button>
-        </form>
+    <div className="flex h-screen">
+      {/* Left Side - Background & Text */}
+      <div className="w-733 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+              <div className="h-full flex flex-col justify-center items-start w-full p-10  text-left text-white">
+      
+                <h1 className="text-4xl font-bold mb-4">Join the Movement to Change Education in Nigeria</h1>
+                <p className="text-lg">
+                  Education is the foundation for a better future. Your support can provide essential learning materials, fund school programs, and create opportunities for children to reach their full potential.
+                </p>
+              </div>
+            </div>
+
+      {/* Right Side - Login Form */}
+      <div className="w-733 h-screen flex justify-center items-center bg-gray-100">
+  <div className="w-full h-full px-16 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+    <h2 className="text-big  text-center mb-2">Welcome Back</h2>
+    <p className="text-center text-gray-600 mb-14">
+      Start Changing Lives Through Education
+    </p>
+    {error && <p className="text-red-500 text-center mb-2">{error}</p>}
+
+    <form className="flex w-full flex-col flex-grow" onSubmit={handleSubmit}>
+      <div className="mb-6 flex-col text-left">
+        <label className="block text-gray-700 mb-2">Email</label>
+        <input
+          type="email"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
       </div>
+      <div className="mb-6 flex-col text-left">
+        <label className="block text-gray-700 mb-2">Password</label>
+        <input
+          type="password"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-6 text-sm">
+        <label className="flex items-center">
+          <input type="checkbox" className="mr-2" /> Remember Me
+        </label>
+        <a href="#" className="text-blue-500">Forgot Password?</a>
+      </div>
+
+      {/* Spacer to push the button to the bottom */}
+      <div className="flex-grow"></div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        Login
+      </button>
+
+      <p className="text-center text-sm mt-6">
+        Don't have an account? <a href="/sign-up" className="text-blue-500">Sign Up</a>
+      </p>
+    </form>
+  </div>
+</div>
+
     </div>
   );
 };
