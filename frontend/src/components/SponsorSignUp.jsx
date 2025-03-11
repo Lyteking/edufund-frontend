@@ -18,28 +18,32 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (formData.password !== formData.confirmPassword) {
       setMessage("Passwords do not match");
       return;
     }
-
+  
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/users/", {
+      const response = await axios.post("http://127.0.0.1:8000/users/", {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
       });
+  
       console.log("Signup Success:", response.data);
-      setMessage("Signup successful! You can now login.");
+      setMessage("Signup successful! You can now log in.");
     } catch (error) {
       console.error("Signup Error:", error.response?.data || error.message);
       setMessage(error.response?.data?.detail || "Signup failed. Try again.");
     }
   };
+  
 
   return (
-    <div className="flex p-o h-screen">
-      <div className="w-733 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+    <div className="flex h-screen">
+      <div className="w-1/2 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
         <div className="h-full flex flex-col justify-center items-start w-full p-10 text-left text-white">
 
           <h1 className="text-4xl font-bold mb-4">Join the Movement to Change Education in Nigeria</h1>
@@ -49,11 +53,11 @@ const SignupPage = () => {
         </div>
       </div>
       
-      <div className="w-full h-full flex justify-center items-center bg-gray-100">
-        <div className="w-full h-screen flex-col px-16 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+      <div className="w-1/2 h-full flex justify-center items-center bg-gray-100">
+        <div className="w-full h-screen flex-col px-28 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
           <h2 className="text-big text-center -mb-2">Create Account</h2>
-          <p className="text-center text-gray-600 mb-20">Let's get you started!</p>
-          {message && <p className="text-red-500 text-center mb-4">{message}</p>}
+          <p className="text-center text-gray-600 mb-12">Let's get you started!</p>
+          {message && <p className="text-red-500 text-center mb-2">{message}</p>}
           
           <form className='mt-12' onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 ">

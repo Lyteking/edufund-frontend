@@ -31,8 +31,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Left Side - Background & Text */}
-      <div className="w-733 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+      <div className="w-1/2 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
               <div className="h-full flex flex-col justify-center items-start w-full p-10  text-left text-white">
       
                 <h1 className="text-4xl font-bold mb-4">Join the Movement to Change Education in Nigeria</h1>
@@ -42,11 +41,10 @@ const LoginPage = () => {
               </div>
             </div>
 
-      {/* Right Side - Login Form */}
-      <div className="w-full h-screen flex justify-center items-center bg-gray-100">
-        <div className="w-full h-full px-16 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+      <div className="w-1/2 h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-full h-full px-28 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
           <h2 className="text-big  text-center mb-2">Welcome Back</h2>
-          <p className="text-center text-gray-600 mb-14">
+          <p className="text-center text-gray-600 mb-12">
             Start Changing Lives Through Education
           </p>
           {error && <p className="text-red-500 text-center mb-2">{error}</p>}
@@ -80,7 +78,7 @@ const LoginPage = () => {
               <a href="#" className="text-blue-500">Forgot Password?</a>
             </div>
 
-            {/* Spacer to push the button to the bottom */}
+           
             <div className="flex-grow"></div>
 
             <div className="flex justify-center w-full">
@@ -93,7 +91,7 @@ const LoginPage = () => {
             </div>
 
             <p className="text-center text-sm mt-6">
-              Don't have an account? <a href="/sponsor-sign-up" className="text-blue-500">Sign Up</a>
+              Don't have an account? <a href="/signup/sponsor" className="text-blue-500">Sign Up</a>
             </p>
           </form>
         </div>

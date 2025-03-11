@@ -18,8 +18,8 @@ function App() {
         <Layout>
           <Routes>
           <Route path='/' element={<LandingPage/>}/>
-          <Route path="/sign-up-selection" element={<SignUpSelection />} />
-          <Route path='/sponsor-sign-up' element={<SponsorSignupPage/>}/>
+          <Route path="/signup" element={<SignUpSelection />} />
+          <Route path='/signup/sponsor' element={<SponsorSignupPage/>}/>
           <Route path='/login' element={<LoginPage/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
