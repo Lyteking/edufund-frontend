@@ -43,60 +43,61 @@ const LoginPage = () => {
             </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-733 h-screen flex justify-center items-center bg-gray-100">
-  <div className="w-full h-full px-16 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
-    <h2 className="text-big  text-center mb-2">Welcome Back</h2>
-    <p className="text-center text-gray-600 mb-14">
-      Start Changing Lives Through Education
-    </p>
-    {error && <p className="text-red-500 text-center mb-2">{error}</p>}
+      <div className="w-full h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-full h-full px-16 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+          <h2 className="text-big  text-center mb-2">Welcome Back</h2>
+          <p className="text-center text-gray-600 mb-14">
+            Start Changing Lives Through Education
+          </p>
+          {error && <p className="text-red-500 text-center mb-2">{error}</p>}
 
-    <form className="flex w-full flex-col flex-grow" onSubmit={handleSubmit}>
-      <div className="mb-6 flex-col text-left">
-        <label className="block text-gray-700 mb-2">Email</label>
-        <input
-          type="email"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          <form className="flex w-full flex-col flex-grow" onSubmit={handleSubmit}>
+            <div className="mb-6 flex-col text-left">
+              <label className="block text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-6 flex-col text-left">
+              <label className="block text-gray-700 mb-2">Password</label>
+              <input
+                type="password"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="flex items-center justify-between mb-6 text-sm">
+              <label className="flex items-center">
+                <input type="checkbox" className="mr-2" /> Remember Me
+              </label>
+              <a href="#" className="text-blue-500">Forgot Password?</a>
+            </div>
+
+            {/* Spacer to push the button to the bottom */}
+            <div className="flex-grow"></div>
+
+            <div className="flex justify-center w-full">
+              <button
+                type="submit"
+                className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Login
+              </button>
+            </div>
+
+            <p className="text-center text-sm mt-6">
+              Don't have an account? <a href="/sponsor-sign-up" className="text-blue-500">Sign Up</a>
+            </p>
+          </form>
+        </div>
       </div>
-      <div className="mb-6 flex-col text-left">
-        <label className="block text-gray-700 mb-2">Password</label>
-        <input
-          type="password"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-6 text-sm">
-        <label className="flex items-center">
-          <input type="checkbox" className="mr-2" /> Remember Me
-        </label>
-        <a href="#" className="text-blue-500">Forgot Password?</a>
-      </div>
-
-      {/* Spacer to push the button to the bottom */}
-      <div className="flex-grow"></div>
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-      >
-        Login
-      </button>
-
-      <p className="text-center text-sm mt-6">
-        Don't have an account? <a href="/sign-up" className="text-blue-500">Sign Up</a>
-      </p>
-    </form>
-  </div>
-</div>
-
     </div>
   );
 };

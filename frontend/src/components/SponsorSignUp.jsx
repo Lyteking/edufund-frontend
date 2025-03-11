@@ -49,7 +49,7 @@ const SignupPage = () => {
         </div>
       </div>
       
-      <div className="w-733 h-full flex justify-center items-center bg-gray-100">
+      <div className="w-full h-full flex justify-center items-center bg-gray-100">
         <div className="w-full h-screen flex-col px-16 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
           <h2 className="text-big text-center -mb-2">Create Account</h2>
           <p className="text-center text-gray-600 mb-20">Let's get you started!</p>
@@ -87,10 +87,12 @@ const SignupPage = () => {
               <label htmlFor="terms" className="text-sm">By signing up, you agree to our <a href="#" className="text-blue-500">Terms and Conditions</a></label>
             </div>
             
-            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Create</button>
-          </form>
+            <div className="flex justify-center w-full">
+              <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Create</button>
+            </div>
           
           <p className="text-center text-sm mt-4">Already have an account? <a href="/login" className="text-blue-500">Log in</a></p>
+          </form>
         </div>
       </div>
     </div>
