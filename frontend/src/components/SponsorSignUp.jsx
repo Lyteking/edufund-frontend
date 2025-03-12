@@ -30,6 +30,7 @@ const SignupPage = () => {
         last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
+        password_confirm: formData.confirmPassword
       });
   
       console.log("Signup Success:", response.data);
