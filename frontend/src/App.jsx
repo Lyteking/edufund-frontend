@@ -11,6 +11,7 @@ import SchoolSignUp from './components/SchoolSignUp'
 import Sponsors from "./components/Sponsors";
 import SponsorRepresentatives from "./components/SponsorRepresentatives";
 import Donations from "./components/Donations";
+import FundingCampaignForm from './components/FundingCampaign'
 
 
 
@@ -22,6 +23,7 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+          <Route path='/campaign' element={<FundingCampaignForm/>}/>
           <Route path='/signup/school' element={<SchoolSignUp/>}/>
           <Route path='/' element={<LandingPage/>}/>
           <Route path="/signup" element={<SignUpSelection />} />

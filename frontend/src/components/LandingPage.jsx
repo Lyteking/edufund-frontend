@@ -22,8 +22,11 @@ const FundDream = () => {
             </button>
           </Link>
         </div>
+
+        <div className="flex-grow"></div>
+
         
-        <div className="mt-12">
+        <div className="mt-auto">
           <p className="text-sm md:text-base">
             We work directly with schools and teachers to ensure every donation leads to measurable educational impact
           </p>

@@ -4,14 +4,14 @@ import image from "../assets/signupbg.jpeg";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
-    name: "", // Sponsor Organization Name
+    name: "", 
     email: "",
     phone: "",
     website: "",
     address: "",
     password: "",
     confirmPassword: "",
-    logo: null, // For file upload
+    logo: null,
   });
 
   const [message, setMessage] = useState("");
@@ -40,18 +40,16 @@ const SignupPage = () => {
       return;
     }
   
-    // Ensure website is in correct format
     let website = formData.website.trim();
     if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
       website = "https://" + website;
     }
   
-    // Prepare form data for API request
     const formDataObj = new FormData();
     formDataObj.append("name", formData.name);
     formDataObj.append("email", formData.email);
     formDataObj.append("phone", formData.phone);
-    formDataObj.append("website", website || "");  // Default to empty string
+    formDataObj.append("website", website || "");  
     formDataObj.append("address", formData.address);
     formDataObj.append("password", formData.password);
     if (formData.logo) {
@@ -74,7 +72,6 @@ const SignupPage = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Left Side - Background Image */}
       <div className="w-1/2 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
         <div className="h-full flex flex-col justify-center items-start w-full p-10 text-left text-white">
           <h1 className="text-4xl font-bold mb-4">Join the Movement to Change Education in Nigeria</h1>
@@ -84,7 +81,6 @@ const SignupPage = () => {
         </div>
       </div>
       
-      {/* Right Side - Form */}
       <div className="w-1/2 h-full flex justify-center items-center bg-gray-100">
         <div className="w-full h-screen flex-col px-28 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
           <h2 className="text-big text-center -mb-2">Create Sponsor Account</h2>
@@ -92,13 +88,11 @@ const SignupPage = () => {
           {message && <p className="text-red-500 text-center mb-2">{message}</p>}
           
           <form className="mt-12" onSubmit={handleSubmit}>
-            {/* Sponsor Name */}
             <div className="mb-6 flex-col text-left">
-              <label className="block text-gray-700 mb-2">Organization Name</label>
+              <label className="block text-gray-700 mb-2">FUll Name</label>
               <input type="text" name="name" className="border border-gray-300 p-2 rounded-md w-full" value={formData.name} onChange={handleChange} required />
             </div>
 
-            {/* Email & Phone */}
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Email</label>
@@ -110,7 +104,6 @@ const SignupPage = () => {
               </div>
             </div>
 
-            {/* Website & Address */}
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Website</label>
@@ -122,8 +115,7 @@ const SignupPage = () => {
               </div>
             </div>
 
-            {/* Logo Upload */}
-            <div className="mb-6">
+            <div className="flex-col items-start mb-6">
               <label className="block text-gray-700 mb-2">Upload Logo</label>
               <div className="flex items-center">
                 <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
