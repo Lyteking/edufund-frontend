@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import SponsorSignupPage from './components/SponsorSignUp'
 import Dashboard from "./components/Dashboard";
 import Layout from "./components/Layout";
-import SignUpSelection from "./components/SignUpSelection";
+import SignUp from "./components/SignUp";
 import LandingPage from './components/LandingPage'
 import SchoolSignUp from './components/SchoolSignUp'
 import Sponsors from "./components/Sponsors";
@@ -26,7 +26,7 @@ function App() {
           <Route path='/campaign' element={<FundingCampaignForm/>}/>
           <Route path='/signup/school' element={<SchoolSignUp/>}/>
           <Route path='/' element={<LandingPage/>}/>
-          <Route path="/signup" element={<SignUpSelection />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path='/signup/sponsor' element={<SponsorSignupPage/>}/>
           <Route path='/login' element={<LoginPage/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
