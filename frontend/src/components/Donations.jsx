@@ -34,8 +34,8 @@ const DonationPage = () => {
         </div>
 
         {/* Donation Options */}
-        <h3 className="text-md font-medium mt-4">Select Donation Amount</h3>
-        <div className="grid grid-cols-4 gap-2 my-2">
+        <h3 className="text-sm md:text-md font-medium mt-4">Select Donation Amount</h3>
+        <div className="text-sm md:text-md grid grid-cols-2 grid-rows-2 md:grid-cols-4 gap-2 my-2">
           {[5000, 10000, 20000, 50000].map((value) => (
             <button
               key={value}
