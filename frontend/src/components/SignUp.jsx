@@ -103,7 +103,7 @@ const SignupPage = () => {
         </div>
       </div>
 
-      <div className="sm:w-full md:w-1/2 md:h-full md:flex justify-center items-center bg-gray-100">
+      <div className="w-full md:w-1/2 md:h-full md:flex justify-center items-center bg-gray-100">
         <div className="p-8 w-full pb-30 h-screen flex-col md:px-8 md:py-15 lg:px-22 lg:py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
           <h2 className="text-mid md:text-big text-center -mb-2">Create Account</h2>
           <p className="text-center text-gray-600 mb-12">Let's get you started!</p>
