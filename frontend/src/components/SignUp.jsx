@@ -4,6 +4,8 @@ import axios from "axios";
 import image from "../assets/signupbg.jpeg";
 
 const SignupPage = () => {
+
+  
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -33,60 +35,61 @@ const SignupPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+
+  if (formData.password !== formData.password_confirm) {
+    setMessage("Passwords do not match");
+    return;
+  }
+
+  let website = formData.website.trim();
+  if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
+    website = "https://" + website;
+  }
+
+  const formDataObj = new FormData();
+  formDataObj.append("first_name", formData.first_name);
+  formDataObj.append("last_name", formData.last_name);
+  formDataObj.append("email", formData.email);
+  formDataObj.append("phone", formData.phone);
+  formDataObj.append("website", website || "");
+  formDataObj.append("address", formData.address);
+  formDataObj.append("password", formData.password);
+  formDataObj.append("password_confirm", formData.password_confirm);
+  formDataObj.append("user_type", formData.user_type);
+  if (formData.logo) {
+    formDataObj.append("logo", formData.logo);
+  }
+
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/api/users/", formDataObj, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   
-    if (formData.password !== formData.password_confirm) {
-      setMessage("Passwords do not match");
-      return;
+    console.log("Signup Success:", response.data);
+    setMessage("Signup successful! You will be redirected to the login page shortly.");
+  
+    // Save tokens
+    if (response.data.access && response.data.refresh) {
+      localStorage.setItem("accessToken", response.data.access);
+      localStorage.setItem("refreshToken", response.data.refresh);
+      localStorage.setItem("isNewUser", "true"); // Mark as a new user
+      console.log("Tokens saved successfully!");
+    } else {
+      console.error("Tokens are missing in response:", response.data);
     }
   
-    let website = formData.website.trim();
-    if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
-      website = "https://" + website;
-    }
+    // Redirect to login after 3 seconds
+    setTimeout(() => {
+      navigate("/login");
+    }, 3000);
+  } catch (error) {
+    console.error("Signup Error:", error.response?.data || error.message);
+    setMessage(error.response?.data?.detail || "Signup failed. Try again.");
+  }
   
-    const formDataObj = new FormData();
-    formDataObj.append("first_name", formData.first_name);
-    formDataObj.append("last_name", formData.last_name);
-    formDataObj.append("email", formData.email);
-    formDataObj.append("phone", formData.phone);
-    formDataObj.append("website", website || "");
-    formDataObj.append("address", formData.address);
-    formDataObj.append("password", formData.password);
-    formDataObj.append("password_confirm", formData.password_confirm);
-    formDataObj.append("user_type", formData.user_type); 
-    if (formData.logo) {
-      formDataObj.append("logo", formData.logo);
-    }
-  
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/users/", formDataObj, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-  
-      console.log("Signup Success:", response.data);
-      setMessage("Signup successful! Redirecting...");
-  
-      if (response.data.access && response.data.refresh) {
-        localStorage.setItem("accessToken", response.data.access);
-        localStorage.setItem("refreshToken", response.data.refresh);
-        console.log("Tokens saved successfully!");
-      } else {
-        console.error("Tokens are missing in response:", response.data);
-      }
-  
-      if (formData.user_type === "SCHOOL") {
-        navigate("/signup/school");
-      } else if (formData.user_type === "SPONSOR") {
-        navigate("/signup/sponsor");
-      } else {
-        navigate("/default-signup");
-      }
-    } catch (error) {
-      console.error("Signup Error:", error.response?.data || error.message);
-      setMessage(error.response?.data?.detail || "Signup failed. Try again.");
-    }
-  };
+};
+
   
 
   return (

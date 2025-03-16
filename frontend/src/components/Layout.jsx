@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
             <Link to="/success-stories" className="text-gray-700 hover:text-gray-900">Success Stories</Link>
             <Link to="/contact" className="text-gray-700 hover:text-gray-900">Contact Us</Link>
           </nav>
-          <Link to="/support" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Support Now</Link>
+          <Link to="/signup" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Support Now</Link>
         </div>
       </header>
 

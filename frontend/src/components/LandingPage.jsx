@@ -16,7 +16,7 @@ const FundDream = () => {
         </p>
         
         <div className="mb-8">
-          <Link to="/signup">
+          <Link to="/donations">
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-md transition duration-300">
               Support A Student Today
             </button>
