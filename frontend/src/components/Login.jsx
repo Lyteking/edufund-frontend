@@ -57,7 +57,7 @@ const LoginPage = () => {
   return (
     <div className="flex h-screen">
       <div
-        className="w-1/2 h-screen bg-cover bg-center"
+        className="hidden md:block w-1/2 h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(${image})` }}
       >
         <div className="h-full flex flex-col justify-center items-start w-full p-10 text-left text-white">
@@ -72,9 +72,9 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <div className="w-1/2 h-screen flex justify-center items-center bg-gray-100">
-        <div className="w-full h-full px-28 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
-          <h2 className="text-big text-center mb-2">Welcome Back</h2>
+      <div className="w-full md:w-1/2 h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-full h-full px-8 md:px-28 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+          <h2 className="text-mid md:text-big text-center mb-2">Welcome Back</h2>
           <p className="text-center text-gray-600 mb-12">
             Start Changing Lives Through Education
           </p>

@@ -93,8 +93,8 @@ const SignupPage = () => {
   
 
   return (
-    <div className="flex h-screen">
-      <div className="w-1/2 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+    <div className="justify-center flex h-screen">
+      <div className="hidden md:block md:w-1/2 md:h-screen md:bg-cover md:bg-center" style={{ backgroundImage: `url(${image})` }}>
         <div className="h-full flex flex-col justify-center items-start w-full p-10 text-left text-white">
           <h1 className="text-4xl font-bold mb-4">Join the Movement to Change Education in Nigeria</h1>
           <p className="text-lg">
@@ -103,14 +103,14 @@ const SignupPage = () => {
         </div>
       </div>
 
-      <div className="w-1/2 h-full flex justify-center items-center bg-gray-100">
-        <div className="w-full h-screen flex-col px-28 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
-          <h2 className="text-big text-center -mb-2">Create Account</h2>
+      <div className="sm:w-full md:w-1/2 md:h-full md:flex justify-center items-center bg-gray-100">
+        <div className="p-8 w-full pb-30 h-screen flex-col md:px-8 md:py-15 lg:px-22 lg:py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+          <h2 className="text-mid md:text-big text-center -mb-2">Create Account</h2>
           <p className="text-center text-gray-600 mb-12">Let's get you started!</p>
           {message && <p className="text-red-500 text-center mb-2">{message}</p>}
 
           <form className="mt-12" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="block md:grid md:grid-cols-2 md:gap-4">
               <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">First Name</label>
                 <input type="text" name="first_name" className="border border-gray-300 p-2 rounded-md w-full" value={formData.first_name} onChange={handleChange} required />
@@ -121,8 +121,8 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="mb-6 flex-col text-left">
+            <div className="block md:grid md:grid-cols-2 md:gap-4">
+            <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Email</label>
                 <input type="email" name="email" className="border border-gray-300 p-2 rounded-md w-full" value={formData.email} onChange={handleChange} required />
               </div>
@@ -142,8 +142,8 @@ const SignupPage = () => {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="mb-6 flex-col text-left">
+            <div className="block md:grid md:grid-cols-2 md:gap-4">
+            <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Website</label>
                 <input type="text" name="website" className="border border-gray-300 p-2 rounded-md w-full" value={formData.website} onChange={handleChange} />
               </div>
@@ -165,7 +165,7 @@ const SignupPage = () => {
             <div className="flex flex-grow"></div>
            
 
-            <div className="flex justify-center mt-auto w-full">
+            <div className="flex justify-center md:mt-auto w-full">
               <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
                 Create Account
               </button>

@@ -1,7 +1,12 @@
 @import "tailwindcss";
-
+body{
+  min-width: 320px;
+}
 @theme {
     --text-big: 3rem;
+    --text-mid: 2rem;
+    --drop-shadow-3xl: 0 10px 50px rgba(0, 0, 0, 0.25); 
+
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
