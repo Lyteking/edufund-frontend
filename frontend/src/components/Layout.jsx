@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
         {menuOpen && (
         <div className="md:hidden fixed top-0 right-0  bg-white drop-shadow-3xl p-4 flex flex-col items-end z-50">
           <button
-            className="self-end mb-4 text-xl"
+            className="self-end mb-4 text-xl border-none rounded-lg bg-gray-200 px-2"
             onClick={() => setMenuOpen(false)}
           >
             &times;

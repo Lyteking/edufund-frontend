@@ -12,6 +12,7 @@ import Sponsors from "./components/Sponsors";
 import SponsorRepresentatives from "./components/SponsorRepresentatives";
 import Donations from "./components/Donations";
 import FundingCampaignForm from './components/FundingCampaign'
+import Flutter from "./components/FlutterWavePayroll"
 
 
 
@@ -23,6 +24,7 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+            <Route path='/pay' element={<Flutter/>}/>
           <Route path='/campaign' element={<FundingCampaignForm/>}/>
           <Route path='/signup/school' element={<SchoolSignUp/>}/>
           <Route path='/' element={<LandingPage/>}/>
