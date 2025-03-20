@@ -13,6 +13,8 @@ import SponsorRepresentatives from "./components/SponsorRepresentatives";
 import Donations from "./components/Donations";
 import FundingCampaignForm from './components/FundingCampaign'
 import Flutter from "./components/FlutterWavePayroll"
+import Campaigns from './components/Campaigns'
+import Donate from './components/Donate'
 
 
 
@@ -24,6 +26,8 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+            <Route path='donate/:id/' element={<Donate/>}/>
+            <Route path='campaigns' element={<Campaigns/>}/>
             <Route path='/pay' element={<Flutter/>}/>
           <Route path='/campaign' element={<FundingCampaignForm/>}/>
           <Route path='/signup/school' element={<SchoolSignUp/>}/>

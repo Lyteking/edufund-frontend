@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"; // Import axios
 import image from "../assets/signupbg.jpeg"; // Update with your image path
 
 const LoginPage = () => {
@@ -13,44 +13,45 @@ const LoginPage = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login/", {
-        method: "POST",
+      const payload = { email, password };
+      console.log("Request Payload:", payload); // Log the payload
+
+      // Use axios to make the POST request
+      const response = await axios.post("http://127.0.0.1:8000/api/login/", payload, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        throw new Error("Invalid credentials");
+      console.log("Login Response:", response.data); // Log the response
+
+      // Store tokens or user data (if provided in the response)
+      if (response.data.access) {
+        localStorage.setItem("accessToken", response.data.access);
+      }
+      if (response.data.refresh) {
+        localStorage.setItem("refreshToken", response.data.refresh);
       }
 
-      const data = await response.json();
-
-      // Store tokens
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-
-      // Check user type & redirect accordingly
-      if (data.is_new_user) {
-        switch (data.user_type) {
-          case "SCHOOL":
-            navigate("/signup/school");
-            break;
-          case "SPONSOR":
-            navigate("/signup/sponsor");
-            break;
-          case "GUEST":
-            navigate("/dashboard");
-            break;
-          default:
-            navigate("/dashboard");
-        }
-      } else {
-        // Returning users go to the dashboard
-        navigate("/dashboard");
-      }
+      // Redirect to the dashboard or appropriate page
+      navigate("/dashboard");
       
     } catch (error) {
-      setError("Login failed. Please check your credentials.");
+      console.error("Login Error:", error);
+
+      // Handle axios error response
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Error Response Data:", error.response.data);
+        console.error("Error Response Status:", error.response.status);
+        setError(error.response.data.error || "Login failed. Please check your credentials.");
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No Response Received:", error.request);
+        setError("Network error. Please check your connection.");
+      } else {
+        // Something happened in setting up the request
+        console.error("Request Setup Error:", error.message);
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
