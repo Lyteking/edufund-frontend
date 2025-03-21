@@ -4,8 +4,6 @@ import axios from "axios";
 import image from "../assets/signupbg.jpeg";
 
 const SignupPage = () => {
-
-  
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -16,7 +14,7 @@ const SignupPage = () => {
     password: "",
     password_confirm: "",
     logo: null,
-    user_type: "",
+    user_type: "SCHOOL",
   });
 
   const [message, setMessage] = useState("");
@@ -35,62 +33,49 @@ const SignupPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (formData.password !== formData.password_confirm) {
-    setMessage("Passwords do not match");
-    return;
-  }
-
-  let website = formData.website.trim();
-  if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
-    website = "https://" + website;
-  }
-
-  const formDataObj = new FormData();
-  formDataObj.append("first_name", formData.first_name);
-  formDataObj.append("last_name", formData.last_name);
-  formDataObj.append("email", formData.email);
-  formDataObj.append("phone", formData.phone);
-  formDataObj.append("website", website || "");
-  formDataObj.append("address", formData.address);
-  formDataObj.append("password", formData.password);
-  formDataObj.append("password_confirm", formData.password_confirm);
-  formDataObj.append("user_type", formData.user_type);
-  if (formData.logo) {
-    formDataObj.append("logo", formData.logo);
-  }
-
-  try {
-    const response = await axios.post("http://127.0.0.1:8000/api/users/", formDataObj, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-  
-    console.log("Signup Success:", response.data);
-    setMessage("Signup successful! You will be redirected to the login page shortly.");
-  
-    // Save tokens
-    if (response.data.access && response.data.refresh) {
-      localStorage.setItem("accessToken", response.data.access);
-      localStorage.setItem("refreshToken", response.data.refresh);
-      localStorage.setItem("isNewUser", "true"); // Mark as a new user
-      console.log("Tokens saved successfully!");
-    } else {
-      console.error("Tokens are missing in response:", response.data);
+    if (formData.password !== formData.password_confirm) {
+      setMessage("Passwords do not match");
+      return;
     }
-  
-    // Redirect to login after 3 seconds
-    setTimeout(() => {
-      navigate("/login");
-    }, 3000);
-  } catch (error) {
-    console.error("Signup Error:", error.response?.data || error.message);
-    setMessage(error.response?.data?.detail || "Signup failed. Try again.");
-  }
-  
-};
 
-  
+    let website = formData.website.trim();
+    if (website && !website.startsWith("http://") && !website.startsWith("https://")) {
+      website = "https://" + website;
+    }
+
+    const formDataObj = new FormData();
+    formDataObj.append("first_name", formData.first_name);
+    formDataObj.append("last_name", formData.last_name);
+    formDataObj.append("email", formData.email);
+    formDataObj.append("phone", formData.phone);
+    formDataObj.append("address", formData.address);
+    formDataObj.append("password", formData.password);
+    formDataObj.append("password_confirm", formData.password_confirm);
+    formDataObj.append("user_type", formData.user_type);
+    
+
+    try {
+      const response = await axios.post("https://edufund-1ved.onrender.com/api/users/", formDataObj, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Signup Success:", response);
+      setMessage("Signup successful! You will be redirected shortly.");
+      console.log(response)
+      navigate('/login')
+      
+      
+        localStorage.setItem("isNewUser", "true"); 
+      
+
+     
+    } catch (error) {
+      console.error("Signup Error:", error.response?.data || error.message);
+      setMessage(error.response?.data?.detail || "Signup failed. Try again.");
+    }
+  };
 
   return (
     <div className="justify-center flex h-screen">
@@ -110,7 +95,7 @@ const SignupPage = () => {
           {message && <p className="text-red-500 text-center mb-2">{message}</p>}
 
           <form className="mt-12" onSubmit={handleSubmit}>
-          <div className="block md:grid md:grid-cols-2 md:gap-4">
+            <div className="block md:grid md:grid-cols-2 md:gap-4">
               <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">First Name</label>
                 <input type="text" name="first_name" className="border border-gray-300 p-2 rounded-md w-full" value={formData.first_name} onChange={handleChange} required />
@@ -122,7 +107,7 @@ const SignupPage = () => {
             </div>
 
             <div className="block md:grid md:grid-cols-2 md:gap-4">
-            <div className="mb-6 flex-col text-left">
+              <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Email</label>
                 <input type="email" name="email" className="border border-gray-300 p-2 rounded-md w-full" value={formData.email} onChange={handleChange} required />
               </div>
@@ -132,21 +117,8 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <div className="mb-6 flex-col text-left">
-              <label className="block text-gray-700 mb-2">User Type</label>
-              <select name="user_type" className="border border-gray-300 p-2 rounded-md w-full" value={formData.user_type} onChange={handleChange} required>
-                <option value="">Select User Type</option>
-                <option value="SCHOOL">School</option>
-                <option value="SPONSOR">Sponsor</option>
-                <option value="GUEST">Guest</option>
-              </select>
-            </div>
 
-            <div className="block md:grid md:grid-cols-2 md:gap-4">
-            <div className="mb-6 flex-col text-left">
-                <label className="block text-gray-700 mb-2">Website</label>
-                <input type="text" name="website" className="border border-gray-300 p-2 rounded-md w-full" value={formData.website} onChange={handleChange} />
-              </div>
+            <div className="block md:grid">
               <div className="mb-6 flex-col text-left">
                 <label className="block text-gray-700 mb-2">Address</label>
                 <input type="text" name="address" className="border border-gray-300 p-2 rounded-md w-full" value={formData.address} onChange={handleChange} required />
@@ -163,7 +135,6 @@ const SignupPage = () => {
             </div>
 
             <div className="flex flex-grow"></div>
-           
 
             <div className="flex justify-center md:mt-auto w-full">
               <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">

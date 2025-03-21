@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Logo from '../assets/Logo'
 
 const Layout = ({ children }) => {
@@ -20,12 +20,10 @@ const Layout = ({ children }) => {
           <nav className="hidden md:flex space-x-6">
             <Link to="/" className="text-gray-700 hover:text-gray-900">Home</Link>
             <Link to="/campaigns" className="text-gray-700 hover:text-gray-900">Browse Campaigns</Link>
-            <Link to="/success-stories" className="text-gray-700 hover:text-gray-900">Success Stories</Link>
-            <Link to="/contact" className="text-gray-700 hover:text-gray-900">Contact Us</Link>
           </nav>
           <div className=" hidden md:flex justify-between sm:gap-1 md:gap-3">
-            <Link to="/signup" className="hidden md:block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Sign up</Link>
-            <Link to="/login" className="hidden md:block bg-gray-400 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Log in</Link>
+            <Link to="/signup" className="hidden md:block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Sign Up</Link>
+            <Link to="/login" className="hidden md:block bg-gray-400 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300">Log In</Link>
           </div>
         </div>
         {menuOpen && (
@@ -38,15 +36,14 @@ const Layout = ({ children }) => {
           </button>
           <Link to="/" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Home</Link>
           <Link to="/about" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Browse Campaign</Link>
-          <Link to="/about" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Success Stories</Link>
-          <Link to="/contact" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Contact Us</Link>
-          <Link to="/signup" className="text-sm block p-2 bg-indigo-600 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Support Now</Link>
+          <Link to="/signup" className="text-sm block p-2 bg-indigo-600 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Sign Up</Link>
+          <Link to="/login" className="text-sm block p-2 bg-gray-400 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Log In</Link>
         </div>
       )}
       </header>
 
       <main className="overflow-y-auto scrollbar-hidden flex-grow">
-        {children}
+      <Outlet/>
       </main>
     </div>
   );

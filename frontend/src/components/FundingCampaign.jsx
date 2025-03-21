@@ -30,7 +30,7 @@ const FundingCampaignForm = () => {
   
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/funding-campaign/",
+        "https://edufund-1ved.onrender.com/api/funding-campaign/",
         formData,
         {
           headers: {

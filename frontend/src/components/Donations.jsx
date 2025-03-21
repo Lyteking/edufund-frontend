@@ -1,42 +1,52 @@
 import React, { useState } from "react";
 import { PaystackButton } from "react-paystack";
-import { useLocation, useNavigate } from "react-router-dom"; 
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Logo from '../assets/Logo';
 
 const DonationPage = ({ setCampaign }) => {
   const location = useLocation();
-  // const { campaign } = location.state 
   const navigate = useNavigate();
-  const publicKey = "pk_test_c97495e63115104b8fb29d3b641a2b331e154632"; 
+  const { campaign } = location.state || {}; // Ensure campaign is defined
+  const publicKey = "pk_test_c97495e63115104b8fb29d3b641a2b331e154632";
   const [amount, setAmount] = useState(5000);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [anonymous, setAnonymous] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State for success pop-up
+  const [error, setError] = useState(""); // State for error messages
 
-  const handleSuccess = (response) => {
-    console.log("Payment Successful:", response);
+  const handleSuccess = async (response) => {
+    try {
+      // Prepare the payload for the API request
+      const payload = {
+        amount: amount,
+        campaign: campaign.pk, 
+        email: email,
+      };
 
-    if (!campaign) {
-      console.error("Campaign data is missing.");
-      return;
+      // Make the API request to record the donation
+      const apiResponse = await axios.post(
+        "https://edufund-1ved.onrender.com/api/anonymous-donation/",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      console.log("Donation Successful:", apiResponse.data);
+
+      // Show success pop-up
+      setShowSuccessPopup(true);
+
+      // Redirect to campaigns page after 3 seconds
+      setTimeout(() => {
+        navigate('/campaigns');
+      }, 3000);
+    } catch (error) {
+      console.error("Error processing donation:", error);
+      setError("Failed to process donation. Please try again.");
     }
-
-    const amountNumber = Number(amount) || 0;
-    const campaignAmountNumber = Number(campaign.amount) || 1;
-
-    const fundingProgression = `${((amountNumber) / campaignAmountNumber) * 100}%`;
-
-    const updatedCampaign = {
-      ...campaign,
-      amount: campaign.amount + amountNumber, 
-      // funding_progression: fundingProgression, // Update the progress percentage
-    };
-
-    console.log("Updated Campaign:", updatedCampaign);
-
-    setCampaign(updatedCampaign);
-
-    navigate('/campaigns');
-    console.log('redirected');
   };
 
   const handleClose = () => {
@@ -54,17 +64,15 @@ const DonationPage = ({ setCampaign }) => {
     text: "Pay Now",
     onSuccess: handleSuccess,
     onClose: handleClose,
-    className: "w-full bg-purple-600 text-white py-3 rounded-md mt-4 font-medium"
+    className: "w-full bg-purple-600 text-white py-3 rounded-md mt-4 font-medium",
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#E5E8FF] p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex flex-row justify-around items-center">
-          <svg className="w-30 h-15" width="84" height="107" viewBox="0 0 84 107" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* SVG Paths */}
-          </svg>         
-          <div className="flex flex-col w-3/5 items-center"> 
+          <Logo />
+          <div className="flex flex-col w-3/5 items-center">
             <h2 className="text-lg font-semibold mt-2">Your donation</h2>
             <div className="w-full overflow-x-auto flex-row items-start">
               <p className="text-2xl font-bold text-black">₦ {amount.toLocaleString()}</p>
@@ -126,11 +134,13 @@ const DonationPage = ({ setCampaign }) => {
           <label htmlFor="anonymous-checkbox" className="text-sm">Donate Anonymously</label>
         </div>
 
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
         <div className="mt-4">
           {email ? (
             <PaystackButton {...componentProps} />
           ) : (
-            <button 
+            <button
               onClick={() => alert("Please enter your email address")}
               className="w-full bg-purple-600 text-white py-3 rounded-md mt-4 font-medium opacity-90"
             >
@@ -139,6 +149,15 @@ const DonationPage = ({ setCampaign }) => {
           )}
         </div>
       </div>
+
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
+            <h2 className="text-2xl font-bold mb-4">Donation Successful!</h2>
+            <p className="text-gray-600 mb-6">Thank you for your donation. You will be redirected to the campaigns page shortly.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,100 +1,112 @@
 import { useEffect, useState } from "react";
+import { useAuth } from '../context/AuthContext';
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
+  const { logout, isAuthenticated, user, authTokens } = useAuth(); 
+  const [schools, setSchools] = useState([]); // State to store registered schools
 
-  // Function to fetch users
-  const fetchUsers = async () => {
-    let token = localStorage.getItem("accessToken");
-
-    if (!token) {
-      console.error("No access token found, user is not authenticated.");
-      setError("Authentication failed. Please log in again.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/users/", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 401) {
-        console.warn("Token expired or invalid. Attempting refresh...");
-        token = await refreshAccessToken(); // Get a fresh token
-        if (!token) return; // If refresh failed, do not retry
-        return fetchUsers(); // Retry with new token
-      }
-
-      if (response.status === 403) {
-        console.warn("User does not have permission to access this resource.");
-        setError("You do not have permission to view this data.");
-        return;
-      }
-
-      if (!response.ok) throw new Error("Failed to fetch users");
-
-      const data = await response.json();
-      setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error.message);
-      setError("Failed to fetch users. Please try again.");
-    }
-  };
-
-  // Function to refresh the access token
-  const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    if (!refreshToken) {
-      console.warn("No refresh token found. Logging out...");
-      handleLogout();
-      return null;
-    }
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
-
-      if (!response.ok) {
-        console.error("Token refresh failed. Logging out...");
-        handleLogout();
-        return null;
-      }
-
-      const data = await response.json();
-      localStorage.setItem("accessToken", data.access);
-      return data.access; // Return the new token
-    } catch (error) {
-      console.error("Error refreshing token:", error);
-      handleLogout();
-      return null;
-    }
-  };
-
-  // Function to log out the user
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    window.location.href = "/login";
-  };
-
-  // Fetch users when component loads
+  // Fetch registered schools for the user
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    const fetchSchools = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/school/", {
+          headers: {
+            Authorization: `Bearer ${authTokens.accessToken}`,
+          },
+        });
+
+        if (response.data && Array.isArray(response.data)) {
+          // Filter schools belonging to the current user
+          setSchools(response.data.filter(school => school.user === user.id));
+        }
+      } catch (error) {
+        console.error("Error fetching schools:", error);
+      }
+    };
+
+    fetchSchools();
+  }, [authTokens.accessToken, user.id]);
 
   return (
-    <div>
-      <h1>Users List</h1>
-      {error ? <p>{error}</p> : users.map(user => <p key={user.id}>{user.username}</p>)}
-      <button onClick={handleLogout}>Logout</button>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-8">Welcome, {user?.name}!</h1>
+
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Check Campaigns Card */}
+        <Link to="/dashboard/check-campaigns" className="flex-1">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
+            <h2 className="text-xl font-semibold mb-4">Check Campaigns</h2>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 mx-auto text-blue-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+          </div>
+        </Link>
+
+        {/* Create Campaign Card */}
+        <Link to="/dashboard/create-campaign" className="flex-1">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
+            <h2 className="text-xl font-semibold mb-4">Create Campaign</h2>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 mx-auto text-green-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </div>
+        </Link>
+
+        {schools.length === 0 && (
+          <Link to="/dashboard/register-school" className="flex-1">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
+              <h2 className="text-xl font-semibold mb-4">Register School</h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 mx-auto text-purple-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                />
+              </svg>
+            </div>
+          </Link>
+        )}
+      </div>
+
+      {isAuthenticated && (
+        <button
+          onClick={logout}
+          className="mt-8 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Logout
+        </button>
+      )}
     </div>
   );
 };
