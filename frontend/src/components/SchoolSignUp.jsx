@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 import image from "../assets/signupbg.jpeg";
 import { useAuth } from '../context/AuthContext';
 
 const SchoolSignupPage = () => {
   const { authTokens } = useAuth(); 
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     id_number: "",
     name: "",
@@ -43,8 +45,13 @@ const SchoolSignupPage = () => {
         }
       );
 
-      setMessage("School registered successfully!");
+      setMessage("School registered successfully! Redirecting to dashboard...");
       console.log("School registration response:", response.data);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 3000);
+
     } catch (error) {
       console.error("Error registering school:", error);
 
@@ -66,7 +73,7 @@ const SchoolSignupPage = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+      <div className="w-1/2 hidden md:block h-screen bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
         <div className="h-full flex flex-col justify-center items-start w-full p-10 text-left text-white">
           <h1 className="text-4xl font-bold mb-4">Register Your School</h1>
           <p className="text-lg">
@@ -75,9 +82,9 @@ const SchoolSignupPage = () => {
         </div>
       </div>
 
-      <div className="w-1/2 h-full flex justify-center items-center bg-gray-100">
-        <div className="w-full h-screen flex-col px-28 py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
-          <h2 className="text-big text-center -mb-2">School Registration</h2>
+      <div className="w-full md:w-1/2 h-screen flex justify-center items-center bg-gray-100">
+      <div className="w-full h-full px-8 md:px-28 flex flex-col py-35 items-center bg-white rounded-lg shadow-md overflow-auto scrollbar-hidden">
+      <h2 className="text-mid md:text-big text-center -mb-2">School Registration</h2>
           <p className="text-center text-gray-600 mb-12">Let's get your school registered!</p>
           {message && <p className={`text-center mb-2 ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}>{message}</p>}
 
@@ -152,9 +159,7 @@ const SchoolSignupPage = () => {
               </button>
             </div>
 
-            <p className="text-center text-sm mt-4">
-              Already registered? <a href="/login" className="text-blue-500">Log in</a>
-            </p>
+            
           </form>
         </div>
       </div>

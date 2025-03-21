@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
+import { useNavigate, Link } from "react-router-dom";
 
 export default function CreateCampaign() {
-  const { authTokens, user } = useAuth(); // Access authTokens and user from AuthContext
+  const { authTokens, user } = useAuth(); 
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [reason, setReason] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [schools, setSchools] = useState([]); // State to store registered schools
-  const [selectedSchool, setSelectedSchool] = useState(""); // State to store selected school
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State to control success popup
+  const [schools, setSchools] = useState([]); 
+  const [selectedSchool, setSelectedSchool] = useState(""); 
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,7 +74,6 @@ export default function CreateCampaign() {
     }
   };
 
-  // If no schools are registered, show a message and a link to the dashboard
   if (schools.length === 0) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">

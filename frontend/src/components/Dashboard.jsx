@@ -34,8 +34,7 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold mb-8">Welcome, {user?.name}!</h1>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Check Campaigns Card */}
-        <Link to="/dashboard/check-campaigns" className="flex-1">
+        <Link to="/dashboard" className="flex-1">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
             <h2 className="text-xl font-semibold mb-4">Check Campaigns</h2>
             <svg
@@ -55,7 +54,6 @@ const Dashboard = () => {
           </div>
         </Link>
 
-        {/* Create Campaign Card */}
         <Link to="/dashboard/create-campaign" className="flex-1">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow text-center">
             <h2 className="text-xl font-semibold mb-4">Create Campaign</h2>

@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
           </Link>
 
           {isAuthenticated && ( 
-            <div className="hidden md:flex justify-between sm:gap-1 md:gap-3">
+            <div className=" md:flex justify-between sm:gap-1 md:gap-3">
               <button
                 onClick={handleLogout}
                 className="flex bg-gray-400 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition duration-300"
