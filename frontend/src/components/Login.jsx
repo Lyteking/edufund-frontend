@@ -9,11 +9,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
     try {
       const payload = { username, password };
@@ -53,6 +55,7 @@ const LoginPage = () => {
         setError("An unexpected error occurred. Please try again.");
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -120,11 +123,8 @@ const LoginPage = () => {
             <div className="flex-grow"></div>
 
             <div className="flex justify-center w-full">
-              <button
-                type="submit"
-                className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Login
+            <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex justify-center items-center" disabled={loading}>
+                {loading ? <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span> : "Login"}
               </button>
             </div>
 

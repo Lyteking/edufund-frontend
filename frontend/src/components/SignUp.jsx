@@ -16,7 +16,7 @@ const SignupPage = () => {
     logo: null,
     user_type: "SCHOOL",
   });
-
+  const[loading, setLoading] = useState(false)
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("No file chosen");
   const [showPassword, setShowPassword] = useState(false);
@@ -63,16 +63,19 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
 
     if (!isStrongPassword(formData.password)) {
       setPasswordError("Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.");
       console.log('password check failed')
+      setLoading(false)
       return
     }
     setPasswordError('')
 
     if (formData.password !== formData.password_confirm) {
       setMessage("Passwords do not match");
+      setLoading(false)
       return;
     }
 
@@ -104,8 +107,9 @@ const SignupPage = () => {
       localStorage.setItem("isNewUser", "true");
     } catch (error) {
       console.error("Signup Error:", error.response?.data || error.message);
-      setMessage(error.response?.data?.detail || "Signup failed. Try again.");
+      setMessage(error.response.data.email || "Signup failed. Try again.");
     }
+    setLoading(false)
   };
 
   return (
@@ -210,8 +214,8 @@ const SignupPage = () => {
             <div className="flex flex-grow"></div>
 
             <div className="flex mb-4 justify-center md:mt-auto w-full">
-              <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                Create Account
+            <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex justify-center items-center" disabled={loading}>
+                {loading ? <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5"></span> : "Create Account"}
               </button>
             </div>
             <p>Already have an account? <Link className='text-blue-400' to={'/login'}>Click here to Login</Link></p>
