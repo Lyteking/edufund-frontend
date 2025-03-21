@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import image from "../assets/signupbg.jpeg";
 
@@ -185,11 +185,12 @@ const SignupPage = () => {
 
             <div className="flex flex-grow"></div>
 
-            <div className="flex justify-center md:mt-auto w-full">
+            <div className="flex mb-4 justify-center md:mt-auto w-full">
               <button type="submit" className="w-4/5 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
                 Create Account
               </button>
             </div>
+            <p>Already have an account? <Link className='text-blue-400'to={'/login'}>Click here to Login</Link></p>
           </form>
         </div>
       </div>
