@@ -19,14 +19,14 @@ export default function CreateCampaign() {
   useEffect(() => {
     const fetchSchools = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/school/", {
+        const response = await axios.get("https://edufund-1ved.onrender.com/api/school/", {
           headers: {
             Authorization: `Bearer ${authTokens.accessToken}`,
           },
         });
 
         if (response.data && Array.isArray(response.data)) {
-          setSchools(response.data.filter((school) => school.user === user.id));
+          setSchools(response.data.filter((school) => school.created_by === user.name));
         }
       } catch (error) {
         console.error("Error fetching schools:", error);
@@ -52,7 +52,7 @@ export default function CreateCampaign() {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/funding-campaign/",
+        "https://edufund-1ved.onrender.com/api/funding-campaign/",
         payload,
         {
           headers: {

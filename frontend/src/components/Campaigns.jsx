@@ -37,7 +37,7 @@ const CampaignsPage = () => {
                 console.error(`Error fetching donations for campaign ${campaign.pk}:`, error);
                 return {
                   ...campaign,
-                  amount_raised: 0, // Default to 0 if donations cannot be fetched
+                  amount_raised: 0,
                 };
               }
             })
@@ -100,9 +100,9 @@ const CampaignsPage = () => {
                 ></div>
               </div>
 
-              <div className="flex justify-between text-sm">
-                <p className="text-green-600">Raised: ₦{campaign.amount_raised}</p>
-                <p className="text-gray-500">Target: ₦{campaign.target}</p>
+              <div className="flex-col items-start justify-start text-sm">
+                <p className="text-green-600">Raised: ₦{campaign.amount_raised || 0}</p>
+                <p className="text-gray-500">Target: ₦{campaign.amount}</p>
               </div>
             </div>
           );
@@ -110,8 +110,8 @@ const CampaignsPage = () => {
       </div>
 
       {selectedCampaign && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-gray-100 shadow-lg rounded-xl p-8 max-w-md w-full mx-4">
             <h2 className="text-2xl font-bold mb-4">{selectedCampaign.name}</h2>
             <p className="text-gray-600 mb-6">{selectedCampaign.description}</p>
 
@@ -125,9 +125,6 @@ const CampaignsPage = () => {
             <div className="space-y-2 mb-6">
               <p className="text-gray-700">
                 <span className="font-semibold">Schools:</span> {selectedCampaign.schools?.join(', ') || 'No schools'}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Sponsors:</span> {selectedCampaign.sponsors?.join(', ') || 'No sponsors'}
               </p>
               <p className="text-gray-700">
                 <span className="font-semibold">End Date:</span> {new Date(selectedCampaign.end_date).toLocaleDateString()}

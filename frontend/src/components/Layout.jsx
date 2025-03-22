@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
             &times;
           </button>
           <Link to="/" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/about" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Browse Campaign</Link>
+          <Link to="/campaigns" className="text-sm block p-2 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Browse Campaign</Link>
           <Link to="/signup" className="text-sm w-full mt-2 block p-2 bg-indigo-600 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Sign Up</Link>
           <Link to="/login" className="text-sm w-full block mt-2 p-2 bg-gray-400 hover:bg-gray-200" onClick={() => setMenuOpen(false)}>Log In</Link>
         </div>

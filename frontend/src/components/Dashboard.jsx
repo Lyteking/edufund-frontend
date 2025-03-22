@@ -5,21 +5,19 @@ import axios from "axios";
 
 const Dashboard = () => {
   const { logout, isAuthenticated, user, authTokens } = useAuth(); 
-  const [schools, setSchools] = useState([]); // State to store registered schools
+  const [schools, setSchools] = useState([]); 
 
-  // Fetch registered schools for the user
   useEffect(() => {
     const fetchSchools = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/school/", {
+        const response = await axios.get("https://edufund-1ved.onrender.com/api/school/", {
           headers: {
             Authorization: `Bearer ${authTokens.accessToken}`,
           },
         });
 
         if (response.data && Array.isArray(response.data)) {
-          // Filter schools belonging to the current user
-          setSchools(response.data.filter(school => school.user === user.id));
+          setSchools(response.data.filter(school => school.accessToken === authTokens.accessToken));
         }
       } catch (error) {
         console.error("Error fetching schools:", error);

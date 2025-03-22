@@ -47,6 +47,7 @@ const SchoolSignupPage = () => {
 
       setMessage("School registered successfully! Redirecting to dashboard...");
       console.log("School registration response:", response.data);
+      console.log(response)
 
       setTimeout(() => {
         navigate("/dashboard");

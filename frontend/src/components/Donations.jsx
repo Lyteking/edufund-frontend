@@ -7,25 +7,23 @@ import Logo from '../assets/Logo';
 const DonationPage = ({ setCampaign }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { campaign } = location.state || {}; // Ensure campaign is defined
+  const { campaign } = location.state || {}; 
   const publicKey = "pk_test_c97495e63115104b8fb29d3b641a2b331e154632";
   const [amount, setAmount] = useState(5000);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [anonymous, setAnonymous] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false); // State for success pop-up
-  const [error, setError] = useState(""); // State for error messages
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false); 
+  const [error, setError] = useState(""); 
 
   const handleSuccess = async (response) => {
     try {
-      // Prepare the payload for the API request
       const payload = {
         amount: amount,
-        campaign: campaign.pk, 
+        funding_campaign: campaign.pk, 
         email: email,
       };
 
-      // Make the API request to record the donation
       const apiResponse = await axios.post(
         "https://edufund-1ved.onrender.com/api/anonymous-donation/",
         payload,
@@ -36,10 +34,9 @@ const DonationPage = ({ setCampaign }) => {
 
       console.log("Donation Successful:", apiResponse.data);
 
-      // Show success pop-up
       setShowSuccessPopup(true);
+      console.log(campaign)
 
-      // Redirect to campaigns page after 3 seconds
       setTimeout(() => {
         navigate('/campaigns');
       }, 3000);
