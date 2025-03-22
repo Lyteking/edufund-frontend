@@ -18,13 +18,14 @@ const DonationPage = ({ setCampaign }) => {
 
   const handleSuccess = async (response) => {
     try {
+      // Step 1: Post the donation to the anonymous-donation endpoint
       const payload = {
         amount: amount,
         funding_campaign: campaign.pk, 
         email: email,
       };
 
-      const apiResponse = await axios.post(
+      const donationResponse = await axios.post(
         "https://edufund-1ved.onrender.com/api/anonymous-donation/",
         payload,
         {
@@ -32,11 +33,10 @@ const DonationPage = ({ setCampaign }) => {
         }
       );
 
-      console.log("Donation Successful:", apiResponse.data);
+      console.log("Donation Successful:", donationResponse.data);
+
 
       setShowSuccessPopup(true);
-      console.log(campaign)
-
       setTimeout(() => {
         navigate('/campaigns');
       }, 3000);
