@@ -8,9 +8,11 @@ const CampaignsPage = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('all'); 
+  const [filter, setFilter] = useState('all'); // State for the selected filter
+  const [schoolNames, setSchoolNames] = useState({}); // State to store school names
   const navigate = useNavigate();
 
+  // Function to fetch all donations (handles pagination)
   const fetchAllDonations = async (url) => {
     let allDonations = [];
     let nextUrl = url;
@@ -19,7 +21,7 @@ const CampaignsPage = () => {
       try {
         const response = await axios.get(nextUrl);
         allDonations = [...allDonations, ...response.data.results];
-        nextUrl = response.data.next; 
+        nextUrl = response.data.next; // Update nextUrl to the next page
       } catch (error) {
         console.error('Error fetching donations:', error);
         throw error;
@@ -29,18 +31,54 @@ const CampaignsPage = () => {
     return allDonations;
   };
 
+  // Function to fetch school names from the API endpoints
+  const fetchSchoolNames = async (schoolEndpoints) => {
+    try {
+      const schoolNamePromises = schoolEndpoints.map(async (endpoint) => {
+        const response = await axios.get(endpoint);
+        return response.data.name; // Assuming the school name is in the `name` field
+      });
+
+      const schoolNames = await Promise.all(schoolNamePromises);
+      return schoolNames.join(', '); // Join multiple school names with a comma
+    } catch (error) {
+      console.error('Error fetching school names:', error);
+      return 'Unknown School'; // Fallback if the request fails
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch campaigns
         const campaignsResponse = await axios.get('https://edufund-1ved.onrender.com/api/funding-campaign/');
         console.log('Campaigns API Response:', campaignsResponse.data);
 
+        // Fetch all donations (including paginated results)
         const allDonations = await fetchAllDonations('https://edufund-1ved.onrender.com/api/anonymous-donation/');
         console.log('All Donations:', allDonations);
 
         if (campaignsResponse.data && Array.isArray(campaignsResponse.data.results)) {
           const campaignsData = campaignsResponse.data.results;
 
+          // Fetch school names for all campaigns
+          const schoolNamePromises = campaignsData.map(async (campaign) => {
+            if (campaign.schools && Array.isArray(campaign.schools)) {
+              const schoolNames = await fetchSchoolNames(campaign.schools);
+              return { campaignId: campaign.pk, schoolNames };
+            }
+            return { campaignId: campaign.pk, schoolNames: 'Unknown School' };
+          });
+
+          const schoolNameResults = await Promise.all(schoolNamePromises);
+          const schoolNamesMap = schoolNameResults.reduce((acc, { campaignId, schoolNames }) => {
+            acc[campaignId] = schoolNames;
+            return acc;
+          }, {});
+
+          setSchoolNames(schoolNamesMap);
+
+          // Calculate amount_raised for each campaign
           const updatedCampaigns = campaignsData.map((campaign) => {
             const campaignDonations = allDonations.filter(
               (donation) => donation.funding_campaign === campaign.pk
@@ -58,6 +96,7 @@ const CampaignsPage = () => {
             };
           });
 
+          // Update campaigns state
           setCampaigns(updatedCampaigns);
         } else {
           throw new Error('Invalid API response format: Expected `results` array');
@@ -73,6 +112,7 @@ const CampaignsPage = () => {
     fetchData();
   }, []);
 
+  // Function to filter campaigns based on the selected price range
   const filterCampaigns = (campaigns, filter) => {
     switch (filter) {
       case '0-100000':
@@ -84,7 +124,7 @@ const CampaignsPage = () => {
       case '1000000+':
         return campaigns.filter((campaign) => campaign.amount >= 1000000);
       default:
-        return campaigns;
+        return campaigns; // Show all campaigns
     }
   };
 
@@ -108,13 +148,14 @@ const CampaignsPage = () => {
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
+  // Filter campaigns based on the selected filter
   const filteredCampaigns = filterCampaigns(campaigns, filter);
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen text-center">
+    <div className="flex lg:px-34 lg:py-18 flex-col justify-center items-center h-screen text-center">
       <div className="sticky w-full top-0 bg-white z-0 p-4">
         <h1 className="text-2xl font-bold">Campaigns</h1>
-        <div className="flex justify-end mt-2">
+        <div className="lg:mr-22 md:mr-18 sm:mr-12 flex justify-end mt-2">
           <div className="relative">
             <select
               value={filter}
@@ -122,10 +163,10 @@ const CampaignsPage = () => {
               className="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Campaigns</option>
-              <option value="0-100000">₦0 - ₦100,000</option>
-              <option value="100000-500000">₦100,000 - ₦500,000</option>
-              <option value="500000-1000000">₦500,000 - ₦1,000,000</option>
-              <option value="1000000+">₦1,000,000+</option>
+              <option value="0-100000">0 - 100,000</option>
+              <option value="100000-500000">100,000 - 500,000</option>
+              <option value="500000-1000000">500,000 - 1,000,000</option>
+              <option value="1000000+">1,000,000+</option>
             </select>
           </div>
         </div>
@@ -143,12 +184,12 @@ const CampaignsPage = () => {
               return (
                 <div
                   key={campaign.pk}
-                  className="bg-gray-100 items-start justify-start flex-col sm:w-8/10 md:w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+                  className="bg-gray-100 items-start justify-start flex-col w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
                   onClick={() => handleCampaignClick(campaign)}
                 >
                   <h3 className="text-xl font-bold mb-2">Name: {campaign.name}</h3>
-                  <p className="text-gray-600 mb-2">Reason: {campaign.reason || "No reason"}</p>
-                  <p className="text-gray-600 mb-4">School: {campaign.school || "No school"}</p>
+                  <p className="text-gray-600 mb-2"><strong>Reason:</strong> {campaign.reason || "No reason"}</p>
+                  <p className="text-gray-600 mb-4"><strong>Schools: </strong>{schoolNames[campaign.pk] || "Unknown School"}</p>
 
                   <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                     <div
@@ -196,7 +237,7 @@ const CampaignsPage = () => {
 
             <div className="space-y-2 mb-6">
               <p className="text-gray-700">
-                <span className="font-semibold">Schools:</span> {selectedCampaign.schools?.join(', ') || 'No schools'}
+                <span className="font-semibold">Schools:</span> {schoolNames[selectedCampaign.pk] || 'Unknown School'}
               </p>
               <p className="text-gray-700">
                 <span className="font-semibold">End Date:</span> {new Date(selectedCampaign.end_date).toLocaleDateString()}
