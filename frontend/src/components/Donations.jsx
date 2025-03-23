@@ -18,7 +18,6 @@ const DonationPage = ({ setCampaign }) => {
 
   const handleSuccess = async (response) => {
     try {
-      // Step 1: Post the donation to the anonymous-donation endpoint
       const payload = {
         amount: amount,
         funding_campaign: campaign.pk, 

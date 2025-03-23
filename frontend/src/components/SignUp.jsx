@@ -14,7 +14,7 @@ const SignupPage = () => {
     password: "",
     password_confirm: "",
     logo: null,
-    user_type: "SCHOOL",
+    user_type: "ADMIN",
   });
   const[loading, setLoading] = useState(false)
   const [message, setMessage] = useState("");

@@ -49,6 +49,7 @@ export default function CreateCampaign() {
         description,
         end_date: endDate,
         school: selectedSchool,
+        amount_raised: 0, 
       };
 
       const response = await axios.post(

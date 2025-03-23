@@ -4,94 +4,78 @@ import { useNavigate } from 'react-router-dom';
 
 const CampaignsPage = () => {
   const [campaigns, setCampaigns] = useState([]);
+  const [donations, setDonations] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
+  // Function to fetch all donations (handles pagination)
+  const fetchAllDonations = async (url) => {
+    let allDonations = [];
+    let nextUrl = url;
+
+    while (nextUrl) {
       try {
+        const response = await axios.get(nextUrl);
+        allDonations = [...allDonations, ...response.data.results];
+        nextUrl = response.data.next; // Update nextUrl to the next page
+      } catch (error) {
+        console.error('Error fetching donations:', error);
+        throw error;
+      }
+    }
+
+    return allDonations;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch campaigns
         const campaignsResponse = await axios.get('https://edufund-1ved.onrender.com/api/funding-campaign/');
         console.log('Campaigns API Response:', campaignsResponse.data);
-    
+
+        // Fetch all donations (including paginated results)
+        const allDonations = await fetchAllDonations('https://edufund-1ved.onrender.com/api/anonymous-donation/');
+        console.log('All Donations:', allDonations);
+
         if (campaignsResponse.data && Array.isArray(campaignsResponse.data.results)) {
           const campaignsData = campaignsResponse.data.results;
-    
-          setCampaigns(campaignsData.map(campaign => ({
-            ...campaign,
-            amount_raised: "loading .", 
-            amount: parseFloat(campaign.amount) || 0,
-          })));
-    
-          // Start the "Fetching ...." animation
-          const interval = setInterval(() => {
-            setCampaigns((prevCampaigns) =>
-              prevCampaigns.map((campaign) => {
-                if (typeof campaign.amount_raised === "string" && campaign.amount_raised.startsWith("loading")) {
-                  const dots = campaign.amount_raised.split(" ")[1];
-                  const newDots = dots.length < 3 ? dots + "." : ".";
-                  return { ...campaign, amount_raised: `loading ${newDots}` };
-                }
-                return campaign;
-              })
+
+          // Calculate amount_raised for each campaign
+          const updatedCampaigns = campaignsData.map((campaign) => {
+            const campaignDonations = allDonations.filter(
+              (donation) => donation.funding_campaign === campaign.pk
             );
-          }, 500); 
-    
-          campaignsData.forEach(async (campaign) => {
-            try {
-              let totalAmountRaised = 0;
-              let nextUrl = `https://edufund-1ved.onrender.com/api/anonymous-donation/?campaign=${campaign.pk}`;
-    
-              while (nextUrl) {
-                const donationsResponse = await axios.get(nextUrl);
-                console.log(`Donations for Campaign ${campaign.pk}:`, donationsResponse.data);
-    
-                const donations = donationsResponse.data.results;
-    
-                const pageAmountRaised = donations.reduce((sum, donation) => {
-                  const amount = parseFloat(donation.amount) || 0;
-                  return sum + amount;
-                }, 0);
-    
-                totalAmountRaised += pageAmountRaised;
-    
-                nextUrl = donationsResponse.data.next;
-              }
-    
-              setCampaigns((prevCampaigns) =>
-                prevCampaigns.map((prevCampaign) =>
-                  prevCampaign.pk === campaign.pk
-                    ? { ...prevCampaign, amount_raised: totalAmountRaised }
-                    : prevCampaign
-                )
-              );
-            } catch (error) {
-              console.error(`Error fetching donations for campaign ${campaign.pk}:`, error);
-              setCampaigns((prevCampaigns) =>
-                prevCampaigns.map((prevCampaign) =>
-                  prevCampaign.pk === campaign.pk
-                    ? { ...prevCampaign, amount_raised: "Error fetching donations" }
-                    : prevCampaign
-                )
-              );
-            }
+
+            const amountRaised = campaignDonations.reduce(
+              (sum, donation) => sum + (parseFloat(donation.amount) || 0),
+              0
+            );
+
+            return {
+              ...campaign,
+              amount_raised: amountRaised,
+              amount: parseFloat(campaign.amount) || 0,
+            };
           });
-    
-          setTimeout(() => clearInterval(interval), 10000); 
+
+          // Update campaigns state
+          setCampaigns(updatedCampaigns);
         } else {
           throw new Error('Invalid API response format: Expected `results` array');
         }
       } catch (error) {
-        console.error('Error fetching campaigns:', error);
+        console.error('Error fetching data:', error);
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCampaigns();
-  }, []);
+    fetchData();
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const handleCampaignClick = (campaign) => {
     setSelectedCampaign(campaign);
@@ -107,7 +91,7 @@ const CampaignsPage = () => {
 
   const calculateProgress = (amountRaised, amount) => {
     if (!amountRaised || !amount || amount === 0) return 0;
-    return Math.min((amountRaised / amount) * 100, 100); 
+    return Math.min((amountRaised / amount) * 100, 100);
   };
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
@@ -115,51 +99,51 @@ const CampaignsPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen text-center">
-  <div className="sticky w-full top-0 bg-white z-0 p-4">
-    <h1 className="text-2xl font-bold">Campaigns</h1>
-  </div>
-  <div className="overflow-y-auto w-8/10 flex-1">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-      {campaigns.map((campaign) => {
-        const progressPercentage = calculateProgress(campaign.amount_raised, campaign.amount);
+      <div className="sticky w-full top-0 bg-white z-0 p-4">
+        <h1 className="text-2xl font-bold">Campaigns</h1>
+      </div>
+      <div className="overflow-y-auto w-8/10 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+          {campaigns.map((campaign) => {
+            const progressPercentage = calculateProgress(campaign.amount_raised, campaign.amount);
 
-        return (
-          <div
-            key={campaign.pk}
-            className="bg-gray-100 items-start justify-start flex-col sm:w-8/10 md:w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
-            onClick={() => handleCampaignClick(campaign)}
-          >
-            <h3 className="text-xl font-bold mb-2">Name: {campaign.name}</h3>
-            <p className="text-gray-600 mb-2">Description: {campaign.description || "No description"}</p>
-            <p className="text-gray-600 mb-4">School: {campaign.school || "No school"}</p>
-
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+            return (
               <div
-                className="bg-green-500 h-2.5 rounded-full"
-                style={{ width: `${progressPercentage}%` || 0 }}
-              ></div>
-            </div>
+                key={campaign.pk}
+                className="bg-gray-100 items-start justify-start flex-col sm:w-8/10 md:w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+                onClick={() => handleCampaignClick(campaign)}
+              >
+                <h3 className="text-xl font-bold mb-2">Name: {campaign.name}</h3>
+                <p className="text-gray-600 mb-2">Reason: {campaign.reason || "No reason"}</p>
+                <p className="text-gray-600 mb-4">School: {campaign.school || "No school"}</p>
 
-            <div className="flex-col items-start justify-start text-sm">
-              <p className="text-green-600">
-                Raised: ₦{(campaign.amount_raised || 0).toLocaleString()}
-              </p>
-              <p className="text-gray-500">
-                Target: ₦{(campaign.amount || 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                  <div
+                    className="bg-green-500 h-2.5 rounded-full"
+                    style={{ width: `${progressPercentage}%` || 0 }}
+                  ></div>
+                </div>
+
+                <div className="flex-col items-start justify-start text-sm">
+                  <p className="text-green-600">
+                    Raised: ₦{(campaign.amount_raised || 0).toLocaleString()}
+                  </p>
+                  <p className="text-gray-500">
+                    Target: ₦{(campaign.amount || 0).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {selectedCampaign && (
         <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-gray-100 shadow-lg rounded-xl p-8 max-w-md w-full mx-4">
             <h2 className="text-2xl font-bold mb-4">Name: {selectedCampaign.name}</h2>
-            <p className="text-gray-600 mb-1">Description: {selectedCampaign.description || 'No description'}</p>
-            <p className="text-gray-600 mb-6">Reason: {selectedCampaign.reason || 'No reason'}</p>
+            <p className="text-gray-600 font-bold mb-4">Reason: {selectedCampaign.reason || 'No reason'}</p>
+            <p className="text-gray-600 mb-2">Description: {selectedCampaign.description || 'No description'}</p>
 
             <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
               <div
@@ -174,7 +158,7 @@ const CampaignsPage = () => {
               <p className="text-gray-500">
                 Target: ₦{(selectedCampaign.amount || 0).toLocaleString()}
               </p>
-              </div>
+            </div>
 
             <div className="space-y-2 mb-6">
               <p className="text-gray-700">
