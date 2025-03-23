@@ -8,10 +8,9 @@ const CampaignsPage = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('all'); // State for the selected filter
+  const [filter, setFilter] = useState('all'); 
   const navigate = useNavigate();
 
-  // Function to fetch all donations (handles pagination)
   const fetchAllDonations = async (url) => {
     let allDonations = [];
     let nextUrl = url;
@@ -20,7 +19,7 @@ const CampaignsPage = () => {
       try {
         const response = await axios.get(nextUrl);
         allDonations = [...allDonations, ...response.data.results];
-        nextUrl = response.data.next; // Update nextUrl to the next page
+        nextUrl = response.data.next; 
       } catch (error) {
         console.error('Error fetching donations:', error);
         throw error;
@@ -33,18 +32,15 @@ const CampaignsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch campaigns
         const campaignsResponse = await axios.get('https://edufund-1ved.onrender.com/api/funding-campaign/');
         console.log('Campaigns API Response:', campaignsResponse.data);
 
-        // Fetch all donations (including paginated results)
         const allDonations = await fetchAllDonations('https://edufund-1ved.onrender.com/api/anonymous-donation/');
         console.log('All Donations:', allDonations);
 
         if (campaignsResponse.data && Array.isArray(campaignsResponse.data.results)) {
           const campaignsData = campaignsResponse.data.results;
 
-          // Calculate amount_raised for each campaign
           const updatedCampaigns = campaignsData.map((campaign) => {
             const campaignDonations = allDonations.filter(
               (donation) => donation.funding_campaign === campaign.pk
@@ -62,7 +58,6 @@ const CampaignsPage = () => {
             };
           });
 
-          // Update campaigns state
           setCampaigns(updatedCampaigns);
         } else {
           throw new Error('Invalid API response format: Expected `results` array');
@@ -78,7 +73,6 @@ const CampaignsPage = () => {
     fetchData();
   }, []);
 
-  // Function to filter campaigns based on the selected price range
   const filterCampaigns = (campaigns, filter) => {
     switch (filter) {
       case '0-100000':
@@ -90,7 +84,7 @@ const CampaignsPage = () => {
       case '1000000+':
         return campaigns.filter((campaign) => campaign.amount >= 1000000);
       default:
-        return campaigns; // Show all campaigns
+        return campaigns;
     }
   };
 
@@ -114,7 +108,6 @@ const CampaignsPage = () => {
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
-  // Filter campaigns based on the selected filter
   const filteredCampaigns = filterCampaigns(campaigns, filter);
 
   return (
@@ -138,39 +131,45 @@ const CampaignsPage = () => {
         </div>
       </div>
       <div className="overflow-y-auto w-8/10 flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          {filteredCampaigns.map((campaign) => {
-            const progressPercentage = calculateProgress(campaign.amount_raised, campaign.amount);
+        {filteredCampaigns.length === 0 ? (
+          <div className="flex justify-center items-center h-full">
+            <p className="text-gray-600 text-lg">No Campaign Available</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            {filteredCampaigns.map((campaign) => {
+              const progressPercentage = calculateProgress(campaign.amount_raised, campaign.amount);
 
-            return (
-              <div
-                key={campaign.pk}
-                className="bg-gray-100 items-start justify-start flex-col sm:w-8/10 md:w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
-                onClick={() => handleCampaignClick(campaign)}
-              >
-                <h3 className="text-xl font-bold mb-2">Name: {campaign.name}</h3>
-                <p className="text-gray-600 mb-2">Reason: {campaign.reason || "No reason"}</p>
-                <p className="text-gray-600 mb-4">School: {campaign.school || "No school"}</p>
+              return (
+                <div
+                  key={campaign.pk}
+                  className="bg-gray-100 items-start justify-start flex-col sm:w-8/10 md:w-full rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+                  onClick={() => handleCampaignClick(campaign)}
+                >
+                  <h3 className="text-xl font-bold mb-2">Name: {campaign.name}</h3>
+                  <p className="text-gray-600 mb-2">Reason: {campaign.reason || "No reason"}</p>
+                  <p className="text-gray-600 mb-4">School: {campaign.school || "No school"}</p>
 
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                  <div
-                    className="bg-green-500 h-2.5 rounded-full"
-                    style={{ width: `${progressPercentage}%` || 0 }}
-                  ></div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div
+                      className="bg-green-500 h-2.5 rounded-full"
+                      style={{ width: `${progressPercentage}%` || 0 }}
+                    ></div>
+                  </div>
+
+                  <div className="flex-col items-start justify-start text-sm">
+                    <p className="text-green-600">
+                      Raised: ₦{(campaign.amount_raised || 0).toLocaleString()}
+                    </p>
+                    <p className="text-gray-500">
+                      Target: ₦{(campaign.amount || 0).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="flex-col items-start justify-start text-sm">
-                  <p className="text-green-600">
-                    Raised: ₦{(campaign.amount_raised || 0).toLocaleString()}
-                  </p>
-                  <p className="text-gray-500">
-                    Target: ₦{(campaign.amount || 0).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {selectedCampaign && (
