@@ -8,6 +8,7 @@ const CampaignsPage = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('all'); // State for the selected filter
   const navigate = useNavigate();
 
   // Function to fetch all donations (handles pagination)
@@ -75,7 +76,23 @@ const CampaignsPage = () => {
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
+
+  // Function to filter campaigns based on the selected price range
+  const filterCampaigns = (campaigns, filter) => {
+    switch (filter) {
+      case '0-100000':
+        return campaigns.filter((campaign) => campaign.amount < 100000);
+      case '100000-500000':
+        return campaigns.filter((campaign) => campaign.amount >= 100000 && campaign.amount < 500000);
+      case '500000-1000000':
+        return campaigns.filter((campaign) => campaign.amount >= 500000 && campaign.amount < 1000000);
+      case '1000000+':
+        return campaigns.filter((campaign) => campaign.amount >= 1000000);
+      default:
+        return campaigns; // Show all campaigns
+    }
+  };
 
   const handleCampaignClick = (campaign) => {
     setSelectedCampaign(campaign);
@@ -97,14 +114,32 @@ const CampaignsPage = () => {
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
+  // Filter campaigns based on the selected filter
+  const filteredCampaigns = filterCampaigns(campaigns, filter);
+
   return (
     <div className="flex flex-col justify-center items-center h-screen text-center">
       <div className="sticky w-full top-0 bg-white z-0 p-4">
         <h1 className="text-2xl font-bold">Campaigns</h1>
+        <div className="flex justify-end mt-2">
+          <div className="relative">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="bg-white border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Campaigns</option>
+              <option value="0-100000">₦0 - ₦100,000</option>
+              <option value="100000-500000">₦100,000 - ₦500,000</option>
+              <option value="500000-1000000">₦500,000 - ₦1,000,000</option>
+              <option value="1000000+">₦1,000,000+</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div className="overflow-y-auto w-8/10 flex-1">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          {campaigns.map((campaign) => {
+          {filteredCampaigns.map((campaign) => {
             const progressPercentage = calculateProgress(campaign.amount_raised, campaign.amount);
 
             return (
