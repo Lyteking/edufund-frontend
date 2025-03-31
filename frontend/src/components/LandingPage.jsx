@@ -69,7 +69,7 @@ const FundDream = () => {
 </div>
 
     </div>
-    <div className="bg-white py-24 px-12 lg:px-36">
+    <div className="bg-white py-24 px-12 lg:px-36 border-b-2 border-gray-200">
       <div className="w-full mx-auto flex-col justify-center items-center text-start">
         <h2 className="text-md sm:text-start text-center sm:text-2xl w-full font-semibold text-gray-900 underline decoration-4 underline-offset-8 decoration-orange-400">Simple Steps to Impact</h2>
         
