@@ -112,7 +112,6 @@ const CampaignsPage = () => {
     fetchData();
   }, []);
 
-  // Function to filter campaigns based on the selected price range
   const filterCampaigns = (campaigns, filter) => {
     switch (filter) {
       case '0-100000':
@@ -124,7 +123,7 @@ const CampaignsPage = () => {
       case '1000000+':
         return campaigns.filter((campaign) => campaign.amount >= 1000000);
       default:
-        return campaigns; // Show all campaigns
+        return campaigns; 
     }
   };
 
@@ -148,7 +147,6 @@ const CampaignsPage = () => {
   if (loading) return <div className="p-8 text-center">Loading...</div>;
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
-  // Filter campaigns based on the selected filter
   const filteredCampaigns = filterCampaigns(campaigns, filter);
 
   return (
