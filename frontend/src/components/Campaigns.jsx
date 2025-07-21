@@ -145,7 +145,20 @@ const CampaignsPage = () => {
   };
 
   if (loading) return <div className="p-8 text-center">Loading...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
+  if (error) {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+      <h1 className="text-3xl font-bold text-red-600 mb-4">Something went wrong</h1>
+      <p className="text-gray-700 mb-2">{error || "An unexpected error occurred."}</p>
+      <button
+        className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        onClick={() => window.location.reload()}
+      >
+        Reload Page
+      </button>
+    </div>
+  );
+}
 
   const filteredCampaigns = filterCampaigns(campaigns, filter);
 
